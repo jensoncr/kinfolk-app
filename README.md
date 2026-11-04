@@ -2,7 +2,7 @@
 
 Kinfolk matches renters with compatible roommates and finds an apartment the group can afford together. You talk to it over text, and you stay anonymous until you and a match both say yes.
 
-It's live in San Francisco at [usekinfolk.com](https://usekinfolk.com). Built with [Jack Munhall](https://github.com/jackmunhall).
+It's live at [usekinfolk.com](https://usekinfolk.com). Built with [Jack Munhall](https://github.com/jackmunhall). (WIP testing around ability to build a compelling user experience with text agent enrichment) 
 
 ![The Kinfolk homepage: "Matching changes which doors are open."](docs/assets/homepage.png)
 
