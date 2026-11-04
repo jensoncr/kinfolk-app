@@ -1,0 +1,3 @@
+-- Intentionally empty.
+-- Hosted Supabase is the source of truth; do not seed demo users, profiles,
+-- matches, jobs, or apartment listings from the repo.

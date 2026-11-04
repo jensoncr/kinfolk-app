@@ -1,0 +1,6 @@
+{
+  "supabase-kinfolk": {
+    "type": "http",
+    "url": "https://mcp.supabase.com/mcp?project_ref=${env:SUPABASE_PROJECT_ID}"
+  }
+}

@@ -1,0 +1,17 @@
+packages:
+  - apps/*
+  - packages/*
+
+allowBuilds:
+  braintrust: true
+  esbuild: true
+  ffmpeg-static: true
+  protobufjs: true
+  sharp: true
+  supabase: true
+  unrs-resolver: true
+
+# Carried over from package.json's npm-era "overrides" during the pnpm
+# migration — pnpm 11 reads overrides from here, not package.json.
+overrides:
+  postcss: 8.5.14

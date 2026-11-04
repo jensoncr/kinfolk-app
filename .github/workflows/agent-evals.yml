@@ -1,0 +1,30 @@
+name: agent-evals
+
+# Simulation evals make real model calls and write to the dedicated eval
+# profile, so they run on demand (and can be scheduled once trusted), not on
+# every push. Trigger from the Actions tab or:
+#   gh workflow run agent-evals
+on:
+  workflow_dispatch:
+
+jobs:
+  simulate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - run: corepack enable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run eval:agent
+        env:
+          BRAINTRUST_API_KEY: ${{ secrets.BRAINTRUST_API_KEY }}
+          KINFOLK_EVAL_THREAD_ID: ${{ secrets.KINFOLK_EVAL_THREAD_ID }}
+          KINFOLK_EVAL_USER_ID: ${{ secrets.KINFOLK_EVAL_USER_ID }}
+          NEXT_PUBLIC_KINFOLK_BASE_URL: https://www.usekinfolk.com
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

@@ -1,0 +1,1074 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f8f6f0;
+  --bg-soft: #f3f0e7;
+  --foreground: #0f1a14;
+  --surface: #ffffff;
+  --surface-soft: #f3f0e7;
+  --border: rgba(28, 51, 38, 0.06);
+  --border-strong: rgba(28, 51, 38, 0.1);
+
+  --ink-900: #0f1a14;
+  --ink-800: #1c3326;
+  --ink-700: #2f4a3a;
+  --ink-600: #4b5d52;
+  --ink-500: #6b7a70;
+  --ink-400: #8d9690;
+  --ink-300: #b6bdb7;
+  --ink-muted: #6b7a70;
+
+  --forest-900: #0e1f17;
+  --forest-800: #14271e;
+  --forest-700: #1c3526;
+  --forest-600: #264a36;
+
+  --mint-400: #6dd49a;
+  --mint-300: #9fe4bc;
+  --mint-200: #c9eed8;
+  --mint-100: #def5e6;
+
+  --sage: #a9b4a3;
+  --ochre: #c78b3e;
+  --rust: #b94c3f;
+
+  /* Aliases kept so existing component classes keep working with the warm palette. */
+  --kin-blue: #264a36;
+  --kin-blue-deep: #14271e;
+  --kin-mint: #6dd49a;
+  --kin-sage: #a9b4a3;
+  --kin-coral: #b94c3f;
+  --kin-gold: #c78b3e;
+  --kin-forest: #0e1f17;
+
+  /* Search-surface geometry (2026-07-26). Decoded from Airbnb's current
+     search/PDP and the same anatomy as it appears on flysoar.ai: separation
+     comes from radius + quiet, never from a drawn border. Elevation is a
+     hairline *ring* plus a soft lift, so a card reads as raised paper rather
+     than an outlined box. */
+  --radius-media: 14px;
+  --radius-card: 18px;
+  --radius-panel: 24px;
+  --radius-pill: 999px;
+
+  --lift-0: 0 0 0 1px rgba(28, 51, 38, 0.05);
+  --lift-1:
+    0 0 0 1px rgba(28, 51, 38, 0.05), 0 6px 18px -10px rgba(14, 31, 23, 0.2);
+  --lift-2:
+    0 0 0 1px rgba(28, 51, 38, 0.05), 0 18px 44px -22px rgba(14, 31, 23, 0.34);
+  --lift-3:
+    0 0 0 1px rgba(28, 51, 38, 0.06), 0 32px 76px -30px rgba(14, 31, 23, 0.45);
+
+  --ease: cubic-bezier(0.32, 0.72, 0, 1);
+  /* Entrance easing for the landing "resolve" choreography. A soft decelerate
+     with no overshoot — deliberately distinct from --ease so the on-load motion
+     reads as its own signature rather than a uniform rise. */
+  --ease-resolve: cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-height: 100vh;
+    margin: 0;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-feature-settings: "liga" 1, "kern" 1;
+    font-synthesis: weight;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  ::selection {
+    background: rgba(109, 212, 154, 0.35);
+  }
+}
+
+/* Type roles (2026-07-25): display = Bricolage Grotesque (this class; legacy
+   name kept until a mechanical rename), titles only. Body/UI = Onest. Mono =
+   DM Mono for digits + uppercase eyebrows. Neither Bricolage nor Onest ships
+   italics — body font-synthesis blocks faked ones; emphasis = weight/color. */
+.serif {
+  font-family: var(--font-display), "Avenir Next", sans-serif;
+  font-weight: 600;
+  font-synthesis: weight;
+}
+
+.mono {
+  font-family: var(--font-mono), "SFMono-Regular", Consolas, monospace;
+}
+
+.page-shell {
+  width: min(100% - 32px, 1200px);
+  margin-inline: auto;
+}
+
+.kin-card {
+  border: 1px solid rgba(28, 51, 38, 0.06);
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow:
+    0 1px 2px rgba(28, 51, 38, 0.04),
+    0 20px 36px -22px rgba(14, 31, 23, 0.2);
+}
+
+/* ---------------------------------------------------------------------------
+   Search-surface primitives (/apartments list + detail).
+
+   The rule these encode: hierarchy is carried by weight and ink level, not by
+   type size or drawn boxes. Body copy across the surface sits at one size;
+   exactly one number per card is allowed to be large. Elevation is a hairline
+   ring + soft lift (--lift-*), never a 1px border, so nothing reads as a
+   wireframe. Change the look here, not in the components.
+   ------------------------------------------------------------------------ */
+
+/* Raised paper. `-flat` keeps the ring without the lift for inert surfaces. */
+.kin-surface {
+  background: var(--surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--lift-1);
+}
+
+.kin-surface-flat {
+  background: var(--surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--lift-0);
+}
+
+.kin-surface-raised {
+  background: var(--surface);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--lift-2);
+}
+
+/* ---------------------------------------------------------------------------
+   The segmented search bar.
+
+   One round container, fields split by hairlines, each field a quiet label
+   stacked over a confident value. It has three states:
+
+     rest      white paper, one lift, all hairlines drawn
+     engaged   a field is open or focused — the ground recedes to soft cream so
+               the live field can come forward as white paper of its own, and
+               the two hairlines touching it retire (a raised field has edges;
+               it does not also need rules)
+     hover     the whole bar lifts a step, nothing else moves
+
+   The engaged state is derived with :has() from the trigger's own
+   aria-expanded, so it cannot desync from which panel is actually open —
+   there is no second source of truth to keep in step.
+   ------------------------------------------------------------------------ */
+.kin-searchbar {
+  display: flex;
+  align-items: stretch;
+  background: var(--surface);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--lift-2);
+  transition:
+    background-color 200ms var(--ease),
+    box-shadow 200ms var(--ease);
+}
+
+.kin-searchbar:hover,
+.kin-searchbar:has(.kin-seg[aria-expanded="true"]),
+.kin-searchbar:has(.kin-seg-field[data-open="true"]),
+.kin-searchbar:has(.kin-seg-field:focus-within) {
+  box-shadow: var(--lift-3);
+}
+
+.kin-searchbar:has(.kin-seg[aria-expanded="true"]),
+.kin-searchbar:has(.kin-seg-field[data-open="true"]),
+.kin-searchbar:has(.kin-seg-field:focus-within) {
+  background: var(--bg-soft);
+}
+
+/* Each field sits in a relatively-positioned wrapper that owns its left rule.
+   Deliberately does NOT set `display`: this rule is unlayered, so it would
+   outrank Tailwind's `hidden` (which lives in @layer utilities) no matter the
+   specificity, and the segments would refuse to hide on phones. The consumer
+   passes `flex` / `hidden sm:flex` instead, keeping display under one owner. */
+.kin-seg-wrap {
+  position: relative;
+  min-width: 0;
+}
+
+/* Every field after the first draws its own left rule. The fields must be real
+   DOM siblings for this to work — an earlier `display: contents` wrapper around
+   three of them flattened rendering but not sibling relationships, and the
+   Where↔Budget divider silently never drew. */
+.kin-seg-wrap + .kin-seg-wrap::before {
+  content: "";
+  position: absolute;
+  inset-block: 24%;
+  inset-inline-start: 0;
+  width: 1px;
+  background: var(--border-strong);
+  transition: opacity 160ms var(--ease);
+}
+
+/* Retire both rules touching the live field — its own, and the one belonging
+   to the field after it. */
+.kin-seg-wrap:has(.kin-seg[aria-expanded="true"])::before,
+.kin-seg-wrap:has(.kin-seg[aria-expanded="true"]) + .kin-seg-wrap::before,
+.kin-seg-wrap:has(.kin-seg-field[data-open="true"])::before,
+.kin-seg-wrap:has(.kin-seg-field[data-open="true"]) + .kin-seg-wrap::before,
+.kin-seg-wrap:has(.kin-seg-field:focus-within)::before,
+.kin-seg-wrap:has(.kin-seg-field:focus-within) + .kin-seg-wrap::before {
+  opacity: 0;
+}
+
+/* The field itself. Transparent at rest; white paper when it is the live one. */
+.kin-seg,
+.kin-seg-field {
+  flex: 1;
+  min-width: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  box-shadow: none;
+  transition:
+    background-color 200ms var(--ease),
+    box-shadow 200ms var(--ease);
+}
+
+/* Hover states exclude the live field explicitly. Without the :not(), the
+   :has() selector below outranks the live-field rule — :has() takes the
+   specificity of its argument — and hovering the open field would wash it
+   out instead of leaving it as solid paper. */
+.kin-searchbar .kin-seg:not([aria-expanded="true"]):hover {
+  background: var(--bg-soft);
+}
+
+.kin-searchbar:has(.kin-seg[aria-expanded="true"]) .kin-seg:not([aria-expanded="true"]):hover,
+.kin-searchbar:has(.kin-seg-field[data-open="true"]) .kin-seg:not([aria-expanded="true"]):hover,
+.kin-searchbar:has(.kin-seg-field:focus-within) .kin-seg:not([aria-expanded="true"]):hover {
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.kin-searchbar .kin-seg[aria-expanded="true"],
+.kin-searchbar .kin-seg-field[data-open="true"],
+.kin-searchbar .kin-seg-field:focus-within {
+  background: var(--surface);
+  box-shadow: var(--lift-2);
+}
+
+/* The action holds one fixed width at every state. An earlier version grew it
+   from a mark into a labelled button when a field went live — but it is a flex
+   sibling of the fields, so every field shrank to pay for the growth and the
+   whole bar reflowed on each click. Nothing in this bar may change width in
+   response to being used. The count is tabular so it cannot nudge it either. */
+.kin-searchbar-go {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  /* Square below `sm`: the segments are hidden there, so "Where" is the only
+     flexing child and a 140px action left ~50px of usable input on a 360px
+     phone. The fixed width exists to stop the bar reflowing when a field is
+     clicked — that only binds at widths where the fields are actually shown. */
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-pill);
+  background: var(--forest-700);
+  color: #ffffff;
+  font-size: 14.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  transition: background-color 160ms var(--ease);
+}
+
+.kin-searchbar-go:hover {
+  background: var(--forest-900);
+}
+
+.kin-searchbar-go > span {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .kin-searchbar-go {
+    width: 140px;
+  }
+
+  .kin-searchbar-go > span {
+    display: inline;
+  }
+}
+
+/* The point a search resolved to.
+   Deliberately unlike a listing pin — those are price chips in white, this is
+   a named marker in forest — so the two never read as the same kind of thing.
+   The card is pointer-interactive for its dismiss button; the stem and dot are
+   not, so the marker never eats a click meant for the map. */
+.kin-place-pin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+.kin-place-card {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  max-width: 260px;
+  border-radius: 12px;
+  background: var(--forest-700);
+  box-shadow: 0 6px 20px rgba(14, 31, 23, 0.4);
+}
+
+.kin-place-card-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 7px 4px 7px 11px;
+  font-family: var(--font-sans), -apple-system, sans-serif;
+  text-align: left;
+}
+
+.kin-place-card-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 17px;
+  color: #ffffff;
+}
+
+.kin-place-card-address {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11.5px;
+  line-height: 15px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.kin-place-card-dismiss {
+  /* The only part of the marker that takes clicks — the container and the card
+     body stay inert so the map underneath keeps working. */
+  pointer-events: auto;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  flex: none;
+  border-start-end-radius: 12px;
+  border-end-end-radius: 12px;
+  color: rgba(255, 255, 255, 0.72);
+  transition: color 140ms var(--ease), background-color 140ms var(--ease);
+}
+
+.kin-place-card-dismiss:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* Ties the card to its point so the two read as one object. */
+.kin-place-pin-stem {
+  width: 2px;
+  height: 12px;
+  background: var(--forest-700);
+}
+
+.kin-place-pin-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--forest-700);
+  box-shadow:
+    0 0 0 3.5px #ffffff,
+    0 2px 8px rgba(14, 31, 23, 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kin-place-card-dismiss {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Filter panels. One surface, and one entrance: the panel grows out of the
+   corner of the field that opened it rather than appearing whole.
+   ------------------------------------------------------------------------ */
+.kin-popover {
+  border-radius: var(--radius-panel);
+  background: var(--surface);
+  box-shadow: var(--lift-3);
+}
+
+@keyframes kin-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes kin-pop-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+
+.kin-pop-in {
+  animation: kin-pop-in 220ms var(--ease) both;
+}
+
+.kin-pop-out {
+  animation: kin-pop-out 130ms ease-in both;
+  pointer-events: none;
+}
+
+/* Field name above its value. Sentence-case sans, per the eyebrow rule set in
+   the Pluto pass — mono is digits only outside the marketing hero. The name is
+   the confident line and the value below it is the quiet one, so an unset
+   field reads as a prompt rather than as data. */
+.kin-field-label {
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 15px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-900);
+}
+
+/* Inline fact chip — 20px tall, sits in a text flow, never a background panel. */
+.kin-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 7px;
+  padding: 2.5px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 15px;
+  white-space: nowrap;
+  background: rgba(28, 51, 38, 0.05);
+  color: var(--ink-700);
+}
+
+.kin-chip-accent {
+  background: var(--mint-100);
+  color: var(--forest-700);
+}
+
+.kin-chip-deal {
+  background: rgba(199, 139, 62, 0.15);
+  color: #7f5316;
+}
+
+/* Floating badge over photography. */
+.kin-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-radius: var(--radius-pill);
+  padding: 4px 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 16px;
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--ink-900);
+  box-shadow: 0 3px 10px rgba(14, 31, 23, 0.18);
+}
+
+/* The single saturated action per surface. */
+.kin-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: var(--radius-pill);
+  padding: 13px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 20px;
+  color: #ffffff;
+  background: var(--forest-700);
+  transition:
+    background-color 160ms var(--ease),
+    transform 160ms var(--ease);
+}
+
+.kin-action:hover {
+  background: var(--forest-900);
+}
+
+.kin-action:active {
+  transform: scale(0.985);
+}
+
+/* Section rule. Sections are separated by quiet + one hairline, nothing else. */
+.kin-rule {
+  border-top: 1px solid var(--border-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kin-searchbar,
+  .kin-searchbar-go,
+  .kin-seg,
+  .kin-seg-field,
+  .kin-seg-wrap + .kin-seg-wrap::before,
+  .kin-action {
+    transition: none;
+  }
+
+  .kin-action:active {
+    transform: none;
+  }
+
+  /* The panel still needs to announce itself, so keep the fade and drop only
+     the movement — a hard cut reads as a glitch, a slide reads as motion. */
+  .kin-pop-in {
+    animation: kin-fade-in 120ms linear both;
+  }
+
+  .kin-pop-out {
+    animation: kin-fade-out 90ms linear both;
+  }
+
+  @keyframes kin-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes kin-fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+}
+
+.kin-focus {
+  outline: 3px solid transparent;
+  outline-offset: 3px;
+}
+
+.kin-focus:focus-visible {
+  outline-color: rgba(38, 74, 54, 0.4);
+}
+
+.kin-dotted-bg {
+  background:
+    radial-gradient(rgba(28, 51, 38, 0.06) 1px, transparent 1px),
+    #f8f6f0;
+  background-size: 18px 18px;
+}
+
+/* Quiet pane scope shared by /me/profile, /me/settings, and /me/settings/memories.
+   Self-contained tokens so single-pane density and hairline rules don't leak into
+   the rest of the warm app chrome. Kinfolk's own editorial density — hairline
+   rules, generous quiet, and a single accent — anchored in our Fraunces + Inter
+   + DM Mono type and our cream/forest palette. */
+.profile-pane {
+  --pp-canvas: #fdfcf8;
+  --pp-canvas-soft: #f6f3eb;
+  --pp-ink: #0f1a14;
+  --pp-ink-80: rgba(15, 26, 20, 0.86);
+  --pp-ink-60: #647368;
+  --pp-ink-40: #8d9690;
+  --pp-ink-30: #b6bdb7;
+  --pp-hairline: rgba(28, 51, 38, 0.08);
+  --pp-hairline-strong: rgba(28, 51, 38, 0.16);
+  --pp-hairline-soft: rgba(28, 51, 38, 0.05);
+  --pp-mint: #3a9b66;
+  --pp-mint-soft: rgba(58, 155, 102, 0.16);
+
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--pp-ink);
+}
+
+.profile-pane .pp-mono {
+  font-family: var(--font-mono), ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-feature-settings: "tnum" 1;
+}
+
+.profile-pane .pp-serif {
+  font-family: var(--font-display), "Avenir Next", sans-serif;
+  font-synthesis: weight;
+}
+
+/* Subtle heartbeat on the assistant-connected dot. The page is intentionally
+   inert, so this tiny pulse is the only thing that communicates "background
+   sync is alive" without adding any UI chrome. */
+@keyframes pp-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px var(--pp-mint-soft);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(47, 170, 107, 0.1);
+  }
+}
+
+.profile-pane .pp-pulse-dot {
+  animation: pp-pulse 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-pane .pp-pulse-dot {
+    animation: none;
+  }
+}
+
+/* Modal entry/exit. The card centers via fixed positioning + a transform that
+   ALSO carries the slide-down. We don't use Tailwind translate utilities on
+   the dialog content because they would fight the keyframe transform. */
+.kin-modal-base {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes kin-modal-enter {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% - 32px)) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes kin-modal-exit {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% - 12px)) scale(0.97);
+  }
+}
+
+@keyframes kin-overlay-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes kin-overlay-exit {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.kin-modal-base[data-state="open"] {
+  animation: kin-modal-enter 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.kin-modal-base[data-state="closed"] {
+  animation: kin-modal-exit 160ms ease-in both;
+}
+
+[data-kin-overlay][data-state="open"] {
+  animation: kin-overlay-enter 220ms ease-out both;
+}
+
+[data-kin-overlay][data-state="closed"] {
+  animation: kin-overlay-exit 160ms ease-in both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kin-modal-base,
+  [data-kin-overlay] {
+    animation: none !important;
+  }
+}
+
+@property --gradient-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --gradient-angle-offset {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --gradient-percent {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 5%;
+}
+
+@property --gradient-shine {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #ffffff;
+}
+
+@keyframes gradient-angle {
+  to {
+    --gradient-angle: 360deg;
+  }
+}
+
+@keyframes shimmer {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    scale: 1;
+  }
+  50% {
+    scale: 1.2;
+  }
+}
+
+@keyframes typing-dot {
+  0%,
+  80%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
+@layer components {
+.shiny-cta {
+  --shiny-cta-bg: #264a36;
+  --shiny-cta-bg-subtle: #162c20;
+  --shiny-cta-fg: #ffffff;
+  --shiny-cta-highlight: #a7f3d0;
+  --shiny-cta-highlight-subtle: #6ee7b7;
+  --animation: gradient-angle linear infinite;
+  --duration: 3s;
+  --shadow-size: 2px;
+  --transition: 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+
+  isolation: isolate;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  outline-offset: 4px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px 44px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+  color: var(--shiny-cta-fg);
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: 9999px;
+
+  background:
+    linear-gradient(var(--shiny-cta-bg), var(--shiny-cta-bg)) padding-box,
+    conic-gradient(
+      from calc(var(--gradient-angle) - var(--gradient-angle-offset)),
+      transparent,
+      var(--shiny-cta-highlight) var(--gradient-percent),
+      var(--gradient-shine) calc(var(--gradient-percent) * 2),
+      var(--shiny-cta-highlight) calc(var(--gradient-percent) * 3),
+      transparent calc(var(--gradient-percent) * 4)
+    ) border-box;
+
+  box-shadow:
+    inset 0 0 0 1px var(--shiny-cta-bg-subtle),
+    0 8px 22px -12px rgba(38, 74, 54, 0.35);
+  transition: var(--transition);
+  transition-property: --gradient-angle-offset, --gradient-percent, --gradient-shine;
+}
+
+.shiny-cta::before,
+.shiny-cta::after,
+.shiny-cta .shiny-cta-inner::before {
+  content: "";
+  pointer-events: none;
+  z-index: -1;
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  translate: -50% -50%;
+}
+
+.shiny-cta::before {
+  --size: calc(100% - var(--shadow-size) * 3);
+  --position: 2px;
+  --space: calc(var(--position) * 2);
+  width: var(--size);
+  height: var(--size);
+  background:
+    radial-gradient(
+      circle at var(--position) var(--position),
+      white calc(var(--position) / 4),
+      transparent 0
+    ) padding-box;
+  background-size: var(--space) var(--space);
+  background-repeat: space;
+  -webkit-mask-image: conic-gradient(
+    from calc(var(--gradient-angle) + 45deg),
+    black,
+    transparent 10% 90%,
+    black
+  );
+  mask-image: conic-gradient(
+    from calc(var(--gradient-angle) + 45deg),
+    black,
+    transparent 10% 90%,
+    black
+  );
+  border-radius: inherit;
+  opacity: 0.32;
+}
+
+.shiny-cta::after {
+  --animation: shimmer linear infinite;
+  aspect-ratio: 1;
+  width: 100%;
+  background: linear-gradient(-50deg, transparent, var(--shiny-cta-highlight), transparent);
+  -webkit-mask-image: radial-gradient(circle at bottom, transparent 40%, #000);
+  mask-image: radial-gradient(circle at bottom, transparent 40%, #000);
+  opacity: 0.55;
+}
+
+.shiny-cta .shiny-cta-inner {
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  /* deliberately no position: relative — the ::before glow must size against the button, not the text */
+}
+
+.shiny-cta .shiny-cta-inner::before {
+  --size: calc(100% + 1rem);
+  width: var(--size);
+  height: var(--size);
+  box-shadow: inset 0 -1ex 2rem 4px var(--shiny-cta-highlight);
+  opacity: 0;
+  transition: opacity var(--transition);
+  animation: calc(var(--duration) * 1.5) breathe linear infinite;
+}
+
+.shiny-cta,
+.shiny-cta::before,
+.shiny-cta::after {
+  animation:
+    var(--animation) var(--duration),
+    var(--animation) calc(var(--duration) / 0.4) reverse paused;
+  animation-composition: add;
+}
+
+.shiny-cta:hover,
+.shiny-cta:focus-visible {
+  --gradient-percent: 18%;
+  --gradient-angle-offset: 95deg;
+  --gradient-shine: var(--shiny-cta-highlight-subtle);
+}
+
+.shiny-cta:hover,
+.shiny-cta:hover::before,
+.shiny-cta:hover::after,
+.shiny-cta:focus-visible,
+.shiny-cta:focus-visible::before,
+.shiny-cta:focus-visible::after {
+  animation-play-state: running;
+}
+
+.shiny-cta:hover .shiny-cta-inner::before,
+.shiny-cta:focus-visible .shiny-cta-inner::before {
+  opacity: 1;
+}
+
+.shiny-cta:active {
+  translate: 0 1px;
+}
+
+.shiny-cta-arrow {
+  width: 16px;
+  height: 16px;
+  opacity: 0.9;
+  transition: transform 0.32s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.shiny-cta:hover .shiny-cta-arrow,
+.shiny-cta:focus-visible .shiny-cta-arrow {
+  transform: translateX(3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shiny-cta,
+  .shiny-cta::before,
+  .shiny-cta::after,
+  .shiny-cta .shiny-cta-inner::before {
+    animation: none !important;
+  }
+  .shiny-cta-arrow {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+/* closes `@layer components {` opened above the .shiny-cta cluster */
+}
+
+.animated-row {
+  display: none;
+  opacity: 0;
+  transform: translateY(10px) scale(0.96);
+  transition:
+    opacity 280ms var(--ease),
+    transform 360ms var(--ease);
+}
+
+.animated-row.is-rendered {
+  display: flex;
+}
+
+.animated-row.is-shown {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.typing-dot {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background: var(--ink-400);
+  animation: typing-dot 1.1s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* Entrance + scroll-reveal motion lives in app/(marketing)/_components/landing/landing-motion.tsx
+   (Motion / motion-react) — each section gets its own gesture there.
+   (The one-shot .kin-cta ring and .kin-pulse-dot were deleted 2026-07-06:
+   dead since the hero CTA went back to .shiny-cta.) */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+
+  /* Scoped to .is-rendered: an unscoped override would force the typing
+     indicator rows visible forever for reduced-motion users, beating the
+     base display:none that the chat reducer relies on to hide them. */
+  .animated-row.is-rendered {
+    display: flex !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Strip default mapbox popup chrome so our card renders cleanly. */
+.kinfolk-anchored-popup .mapboxgl-popup-content {
+  padding: 0;
+  background: transparent;
+  border-radius: 16px;
+  box-shadow: none;
+}
+.kinfolk-anchored-popup .mapboxgl-popup-tip {
+  filter: drop-shadow(0 6px 8px rgba(14, 31, 23, 0.18));
+}
+.kinfolk-anchored-popup.mapboxgl-popup-anchor-top .mapboxgl-popup-tip,
+.kinfolk-anchored-popup.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip,
+.kinfolk-anchored-popup.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {
+  border-bottom-color: #ffffff;
+}
+.kinfolk-anchored-popup.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip,
+.kinfolk-anchored-popup.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip,
+.kinfolk-anchored-popup.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {
+  border-top-color: #ffffff;
+}
+.kinfolk-anchored-popup.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+  border-right-color: #ffffff;
+}
+.kinfolk-anchored-popup.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+  border-left-color: #ffffff;
+}
+
+/* Hero "works with" marquee — the track holds two identical logo rows, so
+   -50% is one full loop. Reduced-motion users get the static row instead. */
+@keyframes kin-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "@kinfolk/pipeline",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "test": "vitest run",
+    "listings:backfill:neighborhoods:sf": "node backfill-neighborhoods.mjs --market san-francisco-ca",
+    "listings:neighborhoods:build:sf": "node build-neighborhood-profiles.mjs --market san-francisco-ca",
+    "listings:neighborhoods:enrich:sf": "node enrich-neighborhood-pois.mjs --market san-francisco-ca",
+    "listings:enrich:pois:sf": "node enrich-listing-pois.mjs --market san-francisco-ca",
+    "embeddings:backfill": "node backfill-profile-embeddings.mjs",
+    "signals:test:area": "node test-area-signal-integrations.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.105.4"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.5"
+  }
+}

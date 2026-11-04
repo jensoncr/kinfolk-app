@@ -1,0 +1,28 @@
+{
+  "name": "kinfolk",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.6.0",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "pnpm -C apps/web dev",
+    "dev:web": "pnpm -C apps/web dev:web",
+    "build": "pnpm -C apps/web build",
+    "start": "pnpm -C apps/web start",
+    "test": "pnpm -r run test",
+    "test:unit": "pnpm -r run test",
+    "eval:agent": "pnpm -C apps/web eval:agent",
+    "lint": "pnpm -C apps/web lint",
+    "lint:fix": "pnpm -C apps/web lint:fix",
+    "typecheck": "pnpm -C apps/web typecheck",
+    "supabase:link": "supabase link --project-ref ${SUPABASE_PROJECT_ID:?set SUPABASE_PROJECT_ID}",
+    "supabase:db:push:dry-run": "supabase db push --linked --dry-run",
+    "supabase:db:push": "supabase db push --linked",
+    "supabase:types": "supabase gen types typescript --project-id ${SUPABASE_PROJECT_ID:?set SUPABASE_PROJECT_ID} --schema public > apps/web/lib/supabase/types.ts"
+  },
+  "devDependencies": {
+    "supabase": "2.98.2"
+  }
+}

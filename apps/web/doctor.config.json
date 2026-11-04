@@ -1,0 +1,5 @@
+{
+  "ignore": {
+    "files": ["lib/supabase/types.ts"]
+  }
+}

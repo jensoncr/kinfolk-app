@@ -1,0 +1,45 @@
+# dependencies
+node_modules
+
+# next
+.next
+out
+
+# production
+build
+
+# env
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# misc
+.DS_Store
+.idea/
+*.pem
+*.tsbuildinfo
+
+# scratch / agent reports
+tmp/
+
+# local agent skill installs
+.agents/skills/*
+!.agents/skills/react-doctor/
+!.agents/skills/react-doctor/SKILL.md
+.claude/skills/*
+!.claude/skills/react-doctor/
+!.claude/skills/react-doctor/SKILL.md
+
+# clerk configuration (can include secrets)
+.clerk/
+.qa-backups/
+
+# eval run dossiers are generated artifacts
+apps/web/evals/reports/

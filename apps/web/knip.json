@@ -1,0 +1,5 @@
+{
+  "ignoreIssues": {
+    "lib/supabase/types.ts": ["exports", "types"]
+  }
+}

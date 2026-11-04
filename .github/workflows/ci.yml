@@ -1,0 +1,52 @@
+name: CI
+
+# push is main-only: unrestricted push + pull_request double-runs the full
+# suite on every PR commit.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # packageManager in package.json pins the pnpm version corepack activates.
+      - name: Enable corepack
+        run: corepack enable
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Test
+        run: pnpm run test
+
+      # Catches App-Router-only failures (RSC boundary violations, route type
+      # errors, next.config issues) that pass tsc + vitest and would otherwise
+      # surface first as a failed Render deploy. Public env vars are dummies —
+      # this validates the build, not the runtime.
+      - name: Build
+        run: pnpm run build
+        env:
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_Y2xlcmsuZXhhbXBsZS5jb20k
+          NEXT_PUBLIC_KINFOLK_BASE_URL: https://usekinfolk.com
+          NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+
+      - name: Knip (informational)
+        run: pnpm -C apps/web exec knip
+        continue-on-error: true

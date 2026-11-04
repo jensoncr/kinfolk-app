@@ -1,0 +1,61 @@
+export function dimensionHintForFactKey(factKey: string) {
+  switch (factKey) {
+    case "budget":
+    case "budget_preferred_max":
+    case "budget_min":
+    case "budget_max":
+    case "household_size":
+    case "group_size_flexibility":
+    case "move_in_window":
+    case "neighborhoods":
+    case "pets":
+    case "must_haves":
+      return "feasibility";
+    case "cleanliness":
+      return "home_labor";
+    case "noise_tolerance":
+      return "environment_tolerance";
+    case "sleep_schedule":
+    case "work_from_home":
+    case "work_hours":
+    case "routine_regularity":
+      return "daily_rhythm";
+    case "communication_style":
+    case "conflict_repair":
+    case "planning_style":
+    case "response_time":
+    case "house_meetings":
+      return "communication";
+    case "guests":
+    case "overnight_guests":
+    case "social_energy":
+    case "privacy":
+    case "age":
+    case "preferred_age_range":
+      return "social_boundary";
+    case "verified_work_or_school":
+    case "shared_communities":
+    case "mutuals":
+    case "references":
+    case "prior_roommate_context":
+      return "trust_context";
+    case "interests":
+    case "music_taste":
+    case "media_taste":
+    case "aesthetic_taste":
+      return "rapport_taste";
+    case "rent_tradeoff":
+    case "location_tradeoff":
+    case "commute_tradeoff":
+    case "room_quality_tradeoff":
+    case "risk_tolerance":
+      return "preference_elasticity";
+    case "dealbreakers":
+      return "feasibility";
+    case "smoking":
+    case "accessibility":
+      return "disallowed";
+    default:
+      return "preference_elasticity";
+  }
+}
