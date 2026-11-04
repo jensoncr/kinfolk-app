@@ -1,6 +1,6 @@
 -- Typed-first work/school entry: the picker stores the resolved organization
 -- domain alongside the label. The domain is the stable key (two people who
--- both picked "Fifth Wall" share fifthwall.com regardless of how they typed
+-- both picked "Blue Harbor" share blueharbor.com regardless of how they typed
 -- it); the logo URL is a rendering cache we re-host ourselves so profile views
 -- never hotlink a third-party CDN.
 
@@ -11,7 +11,7 @@ alter table public.kinfolk_users
   add column if not exists education_school_logo_url text;
 
 comment on column public.kinfolk_users.occupation_company_domain is
-  'Resolved employer domain (e.g. fifthwall.com) from the org picker. Null when the user typed a free-text company.';
+  'Resolved employer domain (e.g. blueharbor.com) from the org picker. Null when the user typed a free-text company.';
 comment on column public.kinfolk_users.education_school_domain is
   'Resolved school domain (e.g. nd.edu) from the org picker. Null when the user typed a free-text school.';
 

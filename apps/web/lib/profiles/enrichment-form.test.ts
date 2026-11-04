@@ -26,7 +26,7 @@ describe("profile enrichment form", () => {
         fact("music_taste", "jazz, soul, indie film scores", "rapport_taste"),
         fact(
           "verified_work_or_school",
-          "Portfolio Operations @ Fifth Wall · University of Notre Dame - Mendoza College of Business",
+          "Portfolio Operations @ Blue Harbor · University of Notre Dame - Mendoza College of Business",
           "trust_context",
         ),
         fact("work_from_home", "hybrid", "daily_rhythm"),
@@ -44,7 +44,7 @@ describe("profile enrichment form", () => {
     expect(values.hometown).toBe("San Francisco, CA");
     expect(values.interests).toEqual(["Cooking", "Film"]);
     expect(values.occupationTitle).toBe("Portfolio Operations");
-    expect(values.occupationCompany).toBe("Fifth Wall");
+    expect(values.occupationCompany).toBe("Blue Harbor");
     expect(values.educationSchool).toBe(
       "University of Notre Dame - Mendoza College of Business",
     );
@@ -135,13 +135,13 @@ describe("profile enrichment form", () => {
   it("carries picked organization domains into the profile patch", () => {
     const mutation = buildProfileEnrichmentFormMutation({
       ...emptyProfileEnrichmentFormValues(),
-      occupationCompany: "Fifth Wall",
-      occupationCompanyDomain: "fifthwall.com",
+      occupationCompany: "Blue Harbor",
+      occupationCompanyDomain: "blueharbor.com",
       educationSchool: "University of Notre Dame",
       educationSchoolDomain: "nd.edu",
     });
 
-    expect(mutation.profilePatch.occupationCompanyDomain).toBe("fifthwall.com");
+    expect(mutation.profilePatch.occupationCompanyDomain).toBe("blueharbor.com");
     expect(mutation.profilePatch.educationSchoolDomain).toBe("nd.edu");
   });
 

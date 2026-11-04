@@ -51,7 +51,7 @@ describe("findSchoolByDomain", () => {
 
 describe("brandNameMatches", () => {
   it("accepts a record naming the same organization", () => {
-    expect(brandNameMatches("Fifth Wall", "Fifth Wall Ventures")).toBe(true);
+    expect(brandNameMatches("Blue Harbor", "Blue Harbor Ventures")).toBe(true);
     expect(brandNameMatches("UC Berkeley", "Berkeley")).toBe(true);
   });
 

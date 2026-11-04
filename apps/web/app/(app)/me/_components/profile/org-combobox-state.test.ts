@@ -24,27 +24,27 @@ describe("moveHighlight", () => {
 
 describe("domainSurvivesEdit", () => {
   it("ignores case and surrounding whitespace", () => {
-    expect(domainSurvivesEdit("Fifth Wall", "  fifth wall ")).toBe(true);
+    expect(domainSurvivesEdit("Blue Harbor", "  blue harbor ")).toBe(true);
   });
 
   it("rejects any real change to the label", () => {
-    expect(domainSurvivesEdit("Fifth Wall", "Fifth Walls")).toBe(false);
-    expect(domainSurvivesEdit("Fifth Wall", "Acme")).toBe(false);
+    expect(domainSurvivesEdit("Blue Harbor", "Blue Harbors")).toBe(false);
+    expect(domainSurvivesEdit("Blue Harbor", "Acme")).toBe(false);
   });
 });
 
 describe("applyTextEdit", () => {
   it("drops the domain once the label stops matching the pick", () => {
-    const edited = applyTextEdit({ label: "Fifth Wall", domain: "fifthwall.com" }, "Acme");
+    const edited = applyTextEdit({ label: "Blue Harbor", domain: "blueharbor.com" }, "Acme");
     expect(edited).toEqual({ label: "Acme", domain: null });
   });
 
   it("keeps the domain through a cosmetic edit", () => {
     const edited = applyTextEdit(
-      { label: "Fifth Wall", domain: "fifthwall.com" },
-      "Fifth Wall ",
+      { label: "Blue Harbor", domain: "blueharbor.com" },
+      "Blue Harbor ",
     );
-    expect(edited).toEqual({ label: "Fifth Wall ", domain: "fifthwall.com" });
+    expect(edited).toEqual({ label: "Blue Harbor ", domain: "blueharbor.com" });
   });
 
   it("leaves free text without a domain", () => {

@@ -49,13 +49,13 @@ describe("buildProfileEmbeddingCard", () => {
         aboutText: "Reach me at jenson@example.com.",
         educationSchool: "University of Notre Dame",
         interests: ["cooking", "hiking"],
-        occupationCompany: "Fifth Wall",
+        occupationCompany: "Blue Harbor",
       },
     });
 
     expect(card.text).toContain("noise_tolerance: library quiet");
     expect(card.text).toContain("education_school: university of notre dame");
-    expect(card.text).toContain("occupation_company: fifth wall");
+    expect(card.text).toContain("occupation_company: blue harbor");
     expect(card.text).toContain("interests: cooking, hiking");
     expect(card.text).not.toContain("jack@example.com");
     expect(card.text).not.toContain("415-555-1212");

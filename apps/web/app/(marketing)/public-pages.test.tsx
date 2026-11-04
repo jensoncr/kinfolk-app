@@ -92,7 +92,7 @@ describe("public pages", () => {
     expect(html).toContain('href="/privacy"');
   });
 
-  it("renders the how-it-works walkthrough with all six code-backed steps", () => {
+  it("renders the how-it-works walkthrough with all five code-backed steps", () => {
     const html = renderToStaticMarkup(<HowItWorksPage />);
 
     expect(html).toContain("From <em");
@@ -101,11 +101,10 @@ describe("public pages", () => {
     expect(html).toContain("A few quick questions.");
     expect(html).toContain("New match, texted.");
     expect(html).toContain("Tell me more.");
-    expect(html).toContain("1 spot left.");
     expect(html).toContain('src="/assets/flow/1.png"');
     const firstFlowImage = html.match(/<img[^>]*src="\/assets\/flow\/1\.png"[^>]*>/)?.[0] ?? "";
     expect(firstFlowImage).toContain('data-priority="true"');
-    expect(html).toContain('src="/assets/flow/6.png"');
+    expect(html).toContain('src="/assets/flow/5.png"');
     expect(html).toContain('href="/me"');
   });
 

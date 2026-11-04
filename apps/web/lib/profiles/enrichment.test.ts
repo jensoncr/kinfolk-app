@@ -454,7 +454,7 @@ describe("profile enrichment fact reconciliation", () => {
       extractedFact({
         dimension: "trust_context",
         factKey: "verified_work_or_school",
-        value: "Fifth Wall",
+        value: "Blue Harbor",
       }),
       extractedFact({
         dimension: "trust_context",
@@ -1654,8 +1654,8 @@ describe("structured fact normalization end to end", () => {
         id: "jenson-company",
         dimension: "trust_context",
         factKey: "verified_work_or_school",
-        value: "Fifth Wall",
-        normalizedValue: "fifth wall",
+        value: "Blue Harbor",
+        normalizedValue: "blue harbor",
       }),
       scoringFact({
         id: "jenson-communication",

@@ -117,7 +117,7 @@ describe("updateProfileFieldsForCurrentUser", () => {
     });
     mocks.recomputeCompatibilityForUserId.mockResolvedValue(undefined);
     mocks.syncMatchingSetupFactsForUserId.mockResolvedValue(undefined);
-    mocks.resolveOrgLogoUrl.mockResolvedValue("https://cdn.example/org-logos/fifthwall.com.webp");
+    mocks.resolveOrgLogoUrl.mockResolvedValue("https://cdn.example/org-logos/blueharbor.com.webp");
   });
 
   // Label, domain, and logo are one fact. Every way of writing them
@@ -128,9 +128,9 @@ describe("updateProfileFieldsForCurrentUser", () => {
       return {
         id: "user-1",
         launch_market: "san-francisco-ca",
-        occupation_company: "Fifth Wall",
-        occupation_company_domain: "fifthwall.com",
-        occupation_company_logo_url: "https://cdn.example/org-logos/fifthwall.com.webp",
+        occupation_company: "Blue Harbor",
+        occupation_company_domain: "blueharbor.com",
+        occupation_company_logo_url: "https://cdn.example/org-logos/blueharbor.com.webp",
       };
     }
 
@@ -177,8 +177,8 @@ describe("updateProfileFieldsForCurrentUser", () => {
       mocks.createSupabaseServiceClient.mockReturnValue(stub.client);
 
       await updateProfileFieldsForCurrentUser({
-        occupationCompany: "Fifth Wall",
-        occupationCompanyDomain: "fifth wall.com",
+        occupationCompany: "Blue Harbor",
+        occupationCompanyDomain: "blue harbor.com",
       });
 
       expect(stub.kinfolkUserUpdates[0]).toMatchObject({
@@ -197,12 +197,12 @@ describe("updateProfileFieldsForCurrentUser", () => {
       });
 
       await updateProfileFieldsForCurrentUser({
-        occupationCompany: "Fifth Wall",
-        occupationCompanyDomain: "fifthwall.com",
+        occupationCompany: "Blue Harbor",
+        occupationCompanyDomain: "blueharbor.com",
       });
 
       expect(stub.kinfolkUserUpdates[0]).toMatchObject({
-        occupation_company_logo_url: "https://cdn.example/org-logos/fifthwall.com.webp",
+        occupation_company_logo_url: "https://cdn.example/org-logos/blueharbor.com.webp",
       });
       expect(mocks.resolveOrgLogoUrl).not.toHaveBeenCalled();
     });
@@ -218,7 +218,7 @@ describe("updateProfileFieldsForCurrentUser", () => {
       await updateProfileFieldsForCurrentUser({ occupationCompanyDomain: "acme.com" });
 
       expect(stub.kinfolkUserUpdates[0]).toMatchObject({
-        occupation_company_domain: "fifthwall.com",
+        occupation_company_domain: "blueharbor.com",
       });
       expect(mocks.resolveOrgLogoUrl).not.toHaveBeenCalled();
     });

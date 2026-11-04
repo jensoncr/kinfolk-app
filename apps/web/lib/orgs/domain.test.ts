@@ -3,13 +3,13 @@ import { isFetchableLogoUrl, normalizeOrgDomain } from "./domain";
 
 describe("normalizeOrgDomain", () => {
   it("accepts ordinary domains", () => {
-    expect(normalizeOrgDomain("fifthwall.com")).toBe("fifthwall.com");
+    expect(normalizeOrgDomain("blueharbor.com")).toBe("blueharbor.com");
     expect(normalizeOrgDomain("  ND.EDU  ")).toBe("nd.edu");
     expect(normalizeOrgDomain("sub.example.co.uk")).toBe("sub.example.co.uk");
   });
 
   it("keeps only the host of a pasted URL", () => {
-    expect(normalizeOrgDomain("https://fifthwall.com/team?x=1")).toBe("fifthwall.com");
+    expect(normalizeOrgDomain("https://blueharbor.com/team?x=1")).toBe("blueharbor.com");
     expect(normalizeOrgDomain("https://nd.edu/")).toBe("nd.edu");
   });
 
@@ -25,8 +25,8 @@ describe("normalizeOrgDomain", () => {
       "example.com:not-a-port",
       "example.com:8443",
       "http://user:pw@nd.edu:8443/path",
-      "https://user@fifthwall.com",
-      "fifthwall.com/team",
+      "https://user@blueharbor.com",
+      "blueharbor.com/team",
     ]) {
       expect(normalizeOrgDomain(input)).toBeNull();
     }
@@ -37,8 +37,8 @@ describe("normalizeOrgDomain", () => {
   // overwrite another organization's logo.
   it("rejects anything that is not a plausible hostname", () => {
     for (const input of [
-      "fifth wall.com",
-      "fifth_wall.com",
+      "blue harbor.com",
+      "blue_harbor.com",
       "../../etc/passwd",
       "not-a-domain",
       "-leading.com",
@@ -54,7 +54,7 @@ describe("normalizeOrgDomain", () => {
   });
 
   it("does not collapse distinct inputs onto one value", () => {
-    expect(normalizeOrgDomain("fifth wall.com")).not.toBe(normalizeOrgDomain("fifth-wall.com"));
+    expect(normalizeOrgDomain("blue harbor.com")).not.toBe(normalizeOrgDomain("blue-harbor.com"));
   });
 });
 

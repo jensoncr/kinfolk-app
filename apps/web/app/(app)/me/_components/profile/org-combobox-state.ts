@@ -20,7 +20,7 @@ export function moveHighlight(current: number, delta: number, count: number): nu
 /**
  * Does an edited label still describe the organization whose domain we hold?
  *
- * Picking "Fifth Wall" stores fifthwall.com. If the text is then edited to
+ * Picking "Blue Harbor" stores blueharbor.com. If the text is then edited to
  * something else the domain is stale and must be dropped — otherwise a profile
  * could read "Acme" while carrying a competitor's logo and matching key.
  * Case and surrounding whitespace changes are not edits.

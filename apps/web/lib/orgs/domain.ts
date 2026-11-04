@@ -4,7 +4,7 @@
  * A picked domain is not just display text: it is the storage key for the
  * shared `org-logos` bucket, the key two people are compared on, and an input
  * to an outbound fetch. Sanitizing at the point of use was many-to-one —
- * "fifth wall.com" and "fifth-wall.com" collapsed to the same object key, so
+ * "blue harbor.com" and "blue-harbor.com" collapsed to the same object key, so
  * one user's upload could overwrite another's logo. Validation happens here,
  * once, before the value is persisted or used as a key; anything that fails is
  * treated as free text (no domain) rather than coerced into something close.

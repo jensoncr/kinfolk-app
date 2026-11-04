@@ -104,22 +104,6 @@ const steps: Step[] = [
     height: 1792,
     device: "phone",
   },
-  {
-    n: 6,
-    kicker: "Form the group",
-    title: "1 spot left.",
-    body: (
-      <>
-        Per-person rent, the split, a forming group — <strong>join it or request a tour</strong>,
-        back on the web.
-      </>
-    ),
-    src: "/assets/flow/6.png",
-    alt: "Apartment detail — join a forming group on Kinfolk",
-    width: 1915,
-    height: 1337,
-    device: "web",
-  },
 ];
 
 const DOTS = ["#e2685c", "#e7b14c", "#5fb86b"];
